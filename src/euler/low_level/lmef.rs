@@ -1,6 +1,6 @@
 use crate::{
     euler::{add_halfedge, Dir},
-    Edge, Face, HalfEdge, Loop,
+    structs::{Edge, Face, HalfEdge, Loop},
 };
 
 pub fn lmef(h1: *mut HalfEdge, h2: *mut HalfEdge, face_id: usize) -> *mut Face {

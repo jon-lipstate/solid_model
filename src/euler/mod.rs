@@ -1,3 +1,5 @@
+mod cuboid;
+pub use cuboid::cuboid;
 mod mvfs;
 pub use mvfs::mvfs;
 mod mate;

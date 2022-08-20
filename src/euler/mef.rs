@@ -1,4 +1,4 @@
-use crate::Solid;
+use crate::structs::Solid;
 
 use super::low_level::lmef;
 

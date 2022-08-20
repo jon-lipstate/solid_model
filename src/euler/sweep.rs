@@ -1,4 +1,4 @@
-use crate::Face;
+use crate::structs::Face;
 
 use super::{
     low_level::{lmef, lmev},
