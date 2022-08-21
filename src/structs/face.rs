@@ -1,9 +1,13 @@
+use super::{delete, HalfEdge, Loop, Solid};
+use crate::euler::{
+    lkef, lmef, lmekr,
+    low_level::{lkemr, lkev},
+    mate,
+};
 use std::{
     alloc::{alloc, dealloc, Layout},
     ptr::{self},
 };
-
-use super::{delete, HalfEdge, Loop, Solid};
 
 #[derive(Debug, PartialEq)]
 pub struct Face {
@@ -131,6 +135,25 @@ impl Face {
         }
         Ok(None)
     }
-
+    //
+    pub fn loopglue(&mut self) {
+        unsafe {
+            let mut h1 = (*self.loop_list).half_edge;
+            let mut h2 = (*(*self.loop_list).next).half_edge;
+            while !HalfEdge::is_matched(h1, h2) {
+                h2 = (*h2).next;
+            }
+            lmekr(h1, h2);
+            lkev((*h1).prev, (*h2).prev);
+            while (*h1).next != h2 {
+                let h1_next = (*h1).next;
+                lmef((*h1).next, (*h1).prev, 0);
+                lkev((*h1).next, mate((*h1).next));
+                lkef(mate(h1), h1);
+                h1 = h1_next;
+            }
+            lkef(mate(h1), h1);
+        }
+    }
     //
 }

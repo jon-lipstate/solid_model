@@ -74,10 +74,20 @@ impl HalfEdge {
     }
     pub fn insert_before(new: *mut HalfEdge, existing: *mut HalfEdge) {
         unsafe {
-            (*((*existing).prev)).next = new;
+            let mut old_prev = (*existing).prev;
+            if !old_prev.is_null() {
+                (*old_prev).next = new;
+            }
             (*new).prev = (*existing).prev;
             (*existing).prev = new;
             (*new).next = existing;
+        }
+    }
+    pub fn is_matched(a: *mut HalfEdge, b: *mut HalfEdge) -> bool {
+        unsafe {
+            let av = (*a).vertex;
+            let bv = (*b).vertex;
+            Vertex::is_coincident(av, bv)
         }
     }
 }

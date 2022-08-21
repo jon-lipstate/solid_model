@@ -1,7 +1,7 @@
-use super::{mef, mev, mvfs, sweep};
+use crate::euler::{mef, mev, mvfs, sweep};
 use crate::structs::Solid;
 
-pub fn cuboid(dx: f32, dy: f32, dz: f32) -> Result<Solid, String> {
+pub fn block(dx: f32, dy: f32, dz: f32) -> Result<Solid, String> {
     let s = mvfs(1, 1, 0., 0., 0.);
     mev(&s, 1, 1, 2, dx, 0., 0.)?;
 
