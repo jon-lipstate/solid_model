@@ -53,6 +53,6 @@ pub fn kef(s: *mut Solid, vtx_id1: usize, vtx_id2: usize, face_id: usize) -> Res
         }
         lkef(he.unwrap(), mate(he.unwrap()));
     }
-    unimplemented!();
+
     Ok(())
 }

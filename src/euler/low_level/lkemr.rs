@@ -6,9 +6,13 @@ use std::ptr;
 
 pub fn lkemr(h1: *mut HalfEdge, h2: *mut HalfEdge) {
     unsafe {
+        //stash self-references to enable deletion:
+        let mut dh1 = (*(*h1).prev).next;
+        let mut dh2 = (*(*h2).prev).next;
+
         let old_loop = (*h1).lp;
         let new_loop = Loop::new((*old_loop).face);
-        let kill_edge = (*h1).edge;
+        let mut kill_edge = (*h1).edge;
         let mut h3 = (*h1).next;
         (*h1).next = (*h2).next;
         (*(*h2).next).prev = h1;
@@ -23,9 +27,9 @@ pub fn lkemr(h1: *mut HalfEdge, h2: *mut HalfEdge) {
                 break;
             }
         }
-        h3 = delete_halfedge(h1);
+        h3 = delete_halfedge(&mut dh1);
         (*old_loop).half_edge = h3;
-        h4 = delete_halfedge(h2);
+        h4 = delete_halfedge(&mut dh2);
         (*new_loop).half_edge = h4;
 
         (*(*h3).vertex).half_edge = match (*h3).edge.is_null() {
@@ -37,6 +41,7 @@ pub fn lkemr(h1: *mut HalfEdge, h2: *mut HalfEdge) {
             false => h4,
         };
         let s = (*(*old_loop).face).solid;
-        delete(&mut kill_edge, s);
+        (*s).remove_edge(kill_edge);
+        delete(&mut kill_edge);
     }
 }

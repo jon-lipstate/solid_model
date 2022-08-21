@@ -1,3 +1,5 @@
+use std::ptr;
+
 use super::Dir;
 use crate::structs::*;
 
@@ -37,30 +39,20 @@ pub fn add_halfedge(
     }
 }
 
-pub fn delete_halfedge(he: *mut HalfEdge) -> *mut HalfEdge {
+pub fn delete_halfedge(he: &mut *mut HalfEdge) -> *mut HalfEdge {
     unsafe {
-        unimplemented!();
-        // return (*he).prev;
+        if (*(*he)).edge.is_null() {
+            delete(he);
+            return ptr::null_mut();
+        } else if (*(*he)).next == *he {
+            (*(*he)).edge = ptr::null_mut();
+            return *he;
+        } else {
+            (*(*(*he)).prev).next = (*(*he)).next;
+            (*(*(*he)).next).prev = (*(*he)).prev;
+            let rv = (*(*he)).prev;
+            delete(he);
+            return rv;
+        }
     }
 }
-// HalfEdge        *delhe(he)
-// HalfEdge        *he;
-// {
-//         if(he->edg == NIL)
-//         {
-//                 del(HALFEDGE, he, NIL);
-//                 return(NIL);
-//         }
-//         else if(he->nxt == he)
-//         {
-//                 he->edg = NIL;
-//                 return(he);
-//         }
-//         else
-//         {
-//                 he->prv->nxt = he->nxt;
-//                 he->nxt->prv = he->prv;
-//                 del(HALFEDGE, he, NIL);
-//                 return(he->prv);
-//         }
-// }

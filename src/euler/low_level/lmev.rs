@@ -9,9 +9,9 @@ pub fn lmev(h1: *mut HalfEdge, h2: *mut HalfEdge, vtx_id: usize, x: f32, y: f32,
         //Ref to parent Solid:
         let s = (*(*(*h1).lp).face).solid;
         //new vertex:
-        let mut vtx = Vertex::new(s, vtx_id, x, y, z);
+        let mut vtx = (*s).new_vertex(vtx_id, x, y, z);
         //new Edge:
-        let edge = Edge::new(s);
+        let edge = (*s).new_edge();
 
         let mut he = h1;
         while he != h2 {
@@ -27,20 +27,24 @@ pub fn lmev(h1: *mut HalfEdge, h2: *mut HalfEdge, vtx_id: usize, x: f32, y: f32,
 
 pub fn lkev(h1: *mut HalfEdge, h2: *mut HalfEdge) {
     unsafe {
+        //stash self-references to enable deletion:
+        let mut dh1 = (*(*h1).prev).next;
+        let mut dh2 = (*(*h2).prev).next;
+
         let mut he = (*h2).next;
         while he != h1 {
             (*he).vertex = (*h2).vertex;
             he = (*mate(he)).next;
         }
-        (*(*h1).lp).half_edge = delete_halfedge(h1);
-        (*(*h2).lp).half_edge = delete_halfedge(h2);
+        (*(*h1).lp).half_edge = delete_halfedge(&mut dh1);
+        (*(*h2).lp).half_edge = delete_halfedge(&mut dh2);
         (*(*h2).vertex).half_edge = (*h2).next;
 
         if !(*(*(*h2).vertex).half_edge).edge.is_null() {
             (*(*h2).vertex).half_edge = ptr::null_mut();
         }
-        let s = (*(*(*h1).lp).face).solid;
-        delete(&mut (*h1).edge, s);
-        delete(&mut (*h1).vertex, s);
+        // let s = (*(*(*h1).lp).face).solid;
+        delete(&mut (*h1).edge);
+        delete(&mut (*h1).vertex);
     }
 }

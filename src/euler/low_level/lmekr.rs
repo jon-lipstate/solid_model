@@ -1,13 +1,13 @@
 use crate::{
     euler::{add_halfedge, Dir},
-    structs::{Edge, HalfEdge},
+    structs::{delete, Edge, HalfEdge},
 };
 pub fn lmekr(h1: *mut HalfEdge, h2: *mut HalfEdge) {
     unsafe {
         let l1 = (*h1).lp;
-        let l2 = (*h2).lp;
+        let mut l2 = (*h2).lp;
         let f = (*l1).face;
-        let n_h1 = (*l2).half_edge;
+        let mut n_h1 = (*l2).half_edge;
         loop {
             (*n_h1).lp = l1;
             n_h1 = (*n_h1).next;
@@ -26,6 +26,6 @@ pub fn lmekr(h1: *mut HalfEdge, h2: *mut HalfEdge) {
         if (*f).outer_loop == l2 {
             (*f).outer_loop = l1;
         }
-        delete(l2, (*l2).face);
+        delete(&mut l2);
     }
 }

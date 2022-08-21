@@ -4,7 +4,7 @@ use std::{
 };
 
 use crate::structs::Solid;
-pub fn delete<T>(item: &mut *mut T, parent: *mut Solid) {
+pub fn delete<T>(item: &mut *mut T) {
     println!("todo: cleanup logic (removing self from linked-lists etc");
     unsafe {
         dealloc(*item as *mut u8, Layout::new::<T>());

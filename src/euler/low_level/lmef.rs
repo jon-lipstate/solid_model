@@ -38,15 +38,20 @@ pub fn lmef(h1: *mut HalfEdge, h2: *mut HalfEdge, face_id: usize) -> *mut Face {
 
 pub fn lkef(h1: *mut HalfEdge, h2: *mut HalfEdge) {
     unsafe {
-        let s = (*(*(*h1).lp).face).solid;
+        //stash self-references to enable deletion:
+        let mut dh1 = (*(*h1).prev).next;
+        let mut dh2 = (*(*h2).prev).next;
+        // let s = (*(*(*h1).lp).face).solid;
         let l1 = (*h1).lp;
         let f1 = (*l1).face;
-        let l2 = (*h2).lp;
-        let f2 = (*l2).face;
-
-        while let l = (*f2).loop_list {
-            (*f2).delete_loop(l);
+        let mut l2 = (*h2).lp;
+        let mut f2 = (*l2).face;
+        let mut l = (*f2).loop_list;
+        while !l.is_null() {
+            // i dont understand this one.. come back with breakpoint
+            (*f2).remove_loop(l);
             (*f1).add_loop(l);
+            l = (*f2).loop_list;
         }
         let mut he = (*l2).half_edge;
         loop {
@@ -62,8 +67,8 @@ pub fn lkef(h1: *mut HalfEdge, h2: *mut HalfEdge) {
         he = (*h2).prev;
         (*h2).prev = (*h1).prev;
         (*h1).prev = he;
-        delete_halfedge(h2);
-        delete_halfedge(h1);
+        delete_halfedge(&mut dh2);
+        delete_halfedge(&mut dh1);
 
         (*(*h2).vertex).half_edge = (*h1).next;
 
@@ -75,8 +80,8 @@ pub fn lkef(h1: *mut HalfEdge, h2: *mut HalfEdge) {
         }
         (*l1).half_edge = (*h1).next;
 
-        delete(&mut f2, s);
-        delete(&mut l2, f1); //INVALID
-        delete(&mut (*h2).edge, s);
+        delete(&mut f2);
+        delete(&mut l2);
+        delete(&mut (*h2).edge);
     }
 }
