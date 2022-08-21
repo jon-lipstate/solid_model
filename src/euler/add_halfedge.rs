@@ -36,3 +36,31 @@ pub fn add_halfedge(
         return he;
     }
 }
+
+pub fn delete_halfedge(he: *mut HalfEdge) -> *mut HalfEdge {
+    unsafe {
+        unimplemented!();
+        // return (*he).prev;
+    }
+}
+// HalfEdge        *delhe(he)
+// HalfEdge        *he;
+// {
+//         if(he->edg == NIL)
+//         {
+//                 del(HALFEDGE, he, NIL);
+//                 return(NIL);
+//         }
+//         else if(he->nxt == he)
+//         {
+//                 he->edg = NIL;
+//                 return(he);
+//         }
+//         else
+//         {
+//                 he->prv->nxt = he->nxt;
+//                 he->nxt->prv = he->prv;
+//                 del(HALFEDGE, he, NIL);
+//                 return(he->prv);
+//         }
+// }

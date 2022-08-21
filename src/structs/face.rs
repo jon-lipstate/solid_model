@@ -93,14 +93,14 @@ impl Face {
         unsafe {
             let mut l = self.loop_list;
             while !l.is_null() {
-                let mut h = (*l).ledg;
+                let mut h = (*l).half_edge;
                 loop {
                     let vid = (*(*h).vertex).id;
                     if vid == vtx_id {
                         return Ok(Some(h));
                     }
                     h = (*h).next;
-                    if h == (*l).ledg {
+                    if h == (*l).half_edge {
                         break;
                     }
                 }
@@ -121,7 +121,7 @@ impl Face {
         unsafe {
             let mut l = self.loop_list;
             while !l.is_null() {
-                let mut h = (*l).ledg;
+                let mut h = (*l).half_edge;
                 loop {
                     if (*h).next.is_null() {
                         break;
@@ -132,7 +132,7 @@ impl Face {
                         return Ok(Some(h));
                     }
                     h = (*h).next;
-                    if h == (*l).ledg {
+                    if h == (*l).half_edge {
                         break;
                     }
                 }

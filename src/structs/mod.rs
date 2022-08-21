@@ -22,3 +22,5 @@ pub use vertex::Vertex;
 mod nodes;
 pub use nodes::Nodes;
 //
+mod delete;
+pub use delete::delete;

@@ -6,7 +6,7 @@ use std::{
 #[derive(Debug, PartialEq)]
 pub struct Loop {
     ///ptr to ring of halfedges (ledg)
-    pub ledg: *mut HalfEdge,
+    pub half_edge: *mut HalfEdge,
     ///back ptr to face (lface) MAYBE CONST*???
     pub face: *mut Face,
     // ptr to next loop (nextl)
@@ -24,7 +24,7 @@ impl Loop {
                 face: parent,
                 next: (*parent).loop_list,
                 prev: ptr::null_mut(),
-                ledg: ptr::null_mut(),
+                half_edge: ptr::null_mut(),
             };
             lp.write(lv);
             if !(*parent).loop_list.is_null() {

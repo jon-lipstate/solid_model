@@ -1,6 +1,5 @@
-use crate::structs::Solid;
-
-use super::low_level::lmef;
+use super::low_level::{lkef, lmef};
+use crate::{euler::mate, structs::Solid};
 
 pub fn mef(
     s: &Solid,
@@ -38,4 +37,22 @@ pub fn mef(
         println!("mef: new_face goes nowhere..?");
         Ok(())
     }
+}
+
+pub fn kef(s: *mut Solid, vtx_id1: usize, vtx_id2: usize, face_id: usize) -> Result<(), String> {
+    unsafe {
+        let f = (*s).find_face(face_id)?;
+        if f.is_none() {
+            return Err(format!("kef: face {face_id} not found"));
+        }
+        let he = (*f.unwrap()).find_halfedge_2(vtx_id1, vtx_id2)?;
+        if he.is_none() {
+            return Err(format!(
+                "kef: edge {vtx_id1}-{vtx_id2} on face {face_id} not found"
+            ));
+        }
+        lkef(he.unwrap(), mate(he.unwrap()));
+    }
+    unimplemented!();
+    Ok(())
 }

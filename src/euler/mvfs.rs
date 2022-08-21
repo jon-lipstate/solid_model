@@ -13,7 +13,7 @@ pub fn mvfs(fid: usize, vid: usize, x: f32, y: f32, z: f32) -> Solid {
         (*v).half_edge = he;
         (*f).outer_loop = lp;
         // (f).outer_loop = &mut lp;
-        (*lp).ledg = he;
+        (*lp).half_edge = he;
         (*he).lp = lp;
         (*he).next = he;
         (*he).prev = he;

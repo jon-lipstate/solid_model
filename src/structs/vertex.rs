@@ -6,12 +6,18 @@ use std::{
 
 #[derive(Debug, PartialEq)]
 pub struct Vertex {
-    pub id: usize,                    /* ident */
-    pub half_edge: *mut HalfEdge,     /* ptr to halfedge */
-    pub coords: (f32, f32, f32, f32), /* vtx coords */
-    pub next: *mut Vertex,            /* ptr to next vtx */
-    pub prev: *mut Vertex,            /* ptr to prev vtx */
+    /// (vertexno)
+    pub id: usize,
+    /// (vedge) ptr to halfedge
+    pub half_edge: *mut HalfEdge,
+    /// (vcoord) vtx coords
+    pub coords: (f32, f32, f32, f32),
+    /// (nextv)
+    pub next: *mut Vertex,
+    /// (prevv)
+    pub prev: *mut Vertex,
 }
+
 //
 impl Vertex {
     //globally allocated

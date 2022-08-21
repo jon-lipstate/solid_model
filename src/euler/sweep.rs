@@ -12,7 +12,7 @@ pub fn sweep(f: *mut Face, dx: f32, dy: f32, dz: f32) {
 
         let mut l = (*f).loop_list;
         while !l.is_null() {
-            let h_first = (*l).ledg;
+            let h_first = (*l).half_edge;
             let mut scan = (*h_first).next;
             let mut v = (*(*scan).vertex).coords;
             lmev(scan, scan, next_vtx_id, v.0 + dx, v.1 + dy, v.2 + dz);

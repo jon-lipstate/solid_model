@@ -8,13 +8,13 @@ mod low_level;
 use low_level::*;
 
 mod add_halfedge;
-pub use add_halfedge::add_halfedge;
+pub use add_halfedge::{add_halfedge, delete_halfedge};
 
 mod mev;
 pub use mev::mev;
 
 mod mef;
-pub use mef::mef;
+pub use mef::{kef, mef};
 
 mod sweep;
 pub use sweep::sweep;

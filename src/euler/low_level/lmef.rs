@@ -1,6 +1,10 @@
+use std::ptr;
+
+use add_halfedge::delete_halfedge;
+
 use crate::{
     euler::{add_halfedge, Dir},
-    structs::{Edge, Face, HalfEdge, Loop},
+    structs::{delete, Edge, Face, HalfEdge, Loop},
 };
 
 pub fn lmef(h1: *mut HalfEdge, h2: *mut HalfEdge, face_id: usize) -> *mut Face {
@@ -25,9 +29,54 @@ pub fn lmef(h1: *mut HalfEdge, h2: *mut HalfEdge, face_id: usize) -> *mut Face {
         let temp = (*new_h1).prev;
         (*new_h1).prev = (*new_h2).prev;
         (*new_h2).prev = temp;
-        (*new_loop).ledg = new_h1;
-        (*(*h2).lp).ledg = new_h2;
+        (*new_loop).half_edge = new_h1;
+        (*(*h2).lp).half_edge = new_h2;
 
         new_face
+    }
+}
+
+pub fn lkef(h1: *mut HalfEdge, h2: *mut HalfEdge) {
+    unsafe {
+        let s = (*(*(*h1).lp).face).solid;
+        let l1 = (*h1).lp;
+        let f1 = (*l1).face;
+        let l2 = (*h2).lp;
+        let f2 = (*l2).face;
+
+        while let l = (*f2).loop_list {
+            (*f2).delete_loop(l);
+            (*f1).add_loop(l);
+        }
+        let mut he = (*l2).half_edge;
+        loop {
+            (*he).lp = l1;
+            he = (*he).next;
+            if he == (*l2).half_edge {
+                break;
+            }
+        }
+        //Probable can use .remove_self() ...?
+        (*(*h1).prev).next = h2;
+        (*(*h2).prev).next = h1;
+        he = (*h2).prev;
+        (*h2).prev = (*h1).prev;
+        (*h1).prev = he;
+        delete_halfedge(h2);
+        delete_halfedge(h1);
+
+        (*(*h2).vertex).half_edge = (*h1).next;
+
+        if !(*(*(*h2).vertex).half_edge).edge.is_null() {
+            (*(*h2).vertex).half_edge = ptr::null_mut();
+        }
+        if !(*(*(*h1).vertex).half_edge).edge.is_null() {
+            (*(*h1).vertex).half_edge = ptr::null_mut();
+        }
+        (*l1).half_edge = (*h1).next;
+
+        delete(&mut f2, s);
+        delete(&mut l2, f1); //INVALID
+        delete(&mut (*h2).edge, s);
     }
 }
