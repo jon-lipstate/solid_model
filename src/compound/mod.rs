@@ -6,3 +6,9 @@ pub use block::block;
 
 mod cyl;
 pub use cyl::cyl;
+
+mod ball;
+pub use ball::ball;
+
+mod torus;
+pub use torus::torus;

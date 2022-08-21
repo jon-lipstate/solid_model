@@ -17,7 +17,7 @@ mod mef;
 pub use mef::{kef, mef};
 
 mod sweep;
-pub use sweep::sweep;
+pub use sweep::{rsweep, sweep};
 
 pub enum Dir {
     CCW,
