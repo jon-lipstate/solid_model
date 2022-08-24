@@ -31,4 +31,9 @@ impl Loop {
             lp
         }
     }
+    ///P230 - NOT IMPL
+    /// (larea)
+    pub fn area(&self) -> f32 {
+        unimplemented!()
+    }
 }

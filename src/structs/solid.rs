@@ -217,4 +217,36 @@ impl Solid {
             delete(other);
         }
     }
+    pub fn volume(&self) -> f32 {
+        let mut res = 0.0;
+        unsafe {
+            let mut f = self.faces_start;
+            while !f.is_null() {
+                let mut lp = (*f).loop_list;
+                while !lp.is_null() {
+                    let h1 = (*lp).half_edge;
+                    let mut h2 = (*h1).next;
+                    loop {
+                        let c = cross((*(*h1).vertex).coords, (*(*h2).vertex).coords);
+                        res += dot(c, (*(*(*h2).next).vertex).coords);
+                        h2 = (*h2).next;
+                        if h2 == h1 {
+                            break;
+                        }
+                    }
+                    lp = (*lp).next;
+                }
+                f = (*f).next;
+            }
+        }
+        return res / 6.0;
+    }
+}
+///NOT IMPL _RETURNS -1s_ TODO REFACTOR TO VECTOR3
+fn cross(a: (f32, f32, f32, f32), b: (f32, f32, f32, f32)) -> (f32, f32, f32, f32) {
+    (-1., -1., -1., -1.)
+}
+///TODO REFACTO TO UTILS & VECTOR3
+fn dot(a: (f32, f32, f32, f32), b: (f32, f32, f32, f32)) -> f32 {
+    a.0 * b.0 + a.1 * b.1 + a.2 * b.2
 }
