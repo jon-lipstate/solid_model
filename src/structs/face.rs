@@ -155,5 +155,50 @@ impl Face {
             lkef(mate(h1), h1);
         }
     }
+    //Program 13.1; P219
+    fn equation(&self, lp: *mut Loop) -> Result<(f64, f64, f64, f64), String> {
+        unsafe {
+            let mut eqn = (0., 0., 0., 0.);
+            let mut a = 0.;
+            let mut b = 0.;
+            let mut c = 0.;
+            let mut xc = 0.;
+            let mut yc = 0.;
+            let mut zc = 0.;
+            let mut len = 0;
+            let he = (*lp).half_edge;
+            loop {
+                let vc = (*(*he).vertex).coords;
+                let nvc = (*(*(*he).next).vertex).coords;
+                let xi = vc.0 as f64;
+                let yi = vc.1 as f64;
+                let zi = vc.2 as f64;
+                let xj = nvc.0 as f64;
+                let yj = nvc.1 as f64;
+                let zj = nvc.2 as f64;
+
+                a += (yi - yj) * (zi + zj);
+                b += (zi - zj) * (xi + xj);
+                c += (xi - xj) * (yi + yj);
+                xc += xi;
+                yc += yi;
+                zc += zi;
+                len += 1;
+                if (*he).next == (*lp).half_edge {
+                    break;
+                }
+            }
+            let norm = f64::sqrt(a * a + b * b + c * c);
+            if norm != 0. {
+                eqn.0 = a / norm;
+                eqn.1 = b / norm;
+                eqn.2 = c / norm;
+                eqn.3 = (eqn.0 * xc + eqn.1 * yc + eqn.2 * zc) / -len as f64;
+                return Ok(eqn);
+            } else {
+                return Err(format!("faceeq: null face {}", self.id));
+            }
+        }
+    }
     //
 }
